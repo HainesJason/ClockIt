@@ -95,7 +95,7 @@ namespace ClockIt
                 categoryForm.Close();
                 categoryForm.Dispose();
                
-
+                // test github
                 // This needs moving to the Category form
                 var dataManager = new DataManager();
                 var startBooking = new StartClockModel
