@@ -73,5 +73,25 @@ namespace ClockIt
                 return output.FirstOrDefault();
             }
         }
+
+        public async Task<List<Booking>> GetBookings(DateTime? start,  DateTime? end)
+        {
+            if (!start.HasValue)
+            {
+                start = DateTime.MinValue;
+            }
+            if (!end.HasValue)
+            {
+                end = DateTime.MaxValue;
+            }
+
+            using (IDbConnection cnn = new SqliteConnection(_cnn))
+            {
+                var parameters = new { Start = start.Value, End = end };
+                var sql = "select * from Booking where Start >= @Start and Start <= @End";
+                var output = await cnn.QueryAsync<Booking>(sql, parameters);
+                return output.ToList();
+            }
+        }
     }
 }

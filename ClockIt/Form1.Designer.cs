@@ -35,10 +35,10 @@ namespace ClockIt
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.viewBookingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,17 +74,12 @@ namespace ClockIt
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 1800000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // viewBookingsToolStripMenuItem
             // 
             this.viewBookingsToolStripMenuItem.Name = "viewBookingsToolStripMenuItem";
             this.viewBookingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.viewBookingsToolStripMenuItem.Text = "View Bookings";
+            this.viewBookingsToolStripMenuItem.Click += new System.EventHandler(this.viewBookingsToolStripMenuItem_Click);
             // 
             // purgeAllToolStripMenuItem
             // 
@@ -99,11 +94,18 @@ namespace ClockIt
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1800000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // ClockIT
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ClockIT";
             this.Text = "Form1";
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;

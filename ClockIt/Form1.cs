@@ -94,7 +94,7 @@ namespace ClockIt
                 category = categoryForm.CategoryValue;
                 categoryForm.Close();
                 categoryForm.Dispose();
-               
+
                 // test github
                 // This needs moving to the Category form
                 var dataManager = new DataManager();
@@ -158,6 +158,46 @@ namespace ClockIt
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private async void viewBookingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var todaysBookings = new StringBuilder(@$"Bookings for {DateTime.Today.ToString("dd-MMM-yyyy")}");
+            todaysBookings.AppendLine();
+            todaysBookings.AppendLine();
+            var dataManager = new DataManager();
+            var startDate = DateTime.UtcNow.Date;
+            var endDate = Convert.ToDateTime(startDate.ToString("yyyy-MM-dd 23:59:59.000"));
+            var bookings = await dataManager.GetBookings(startDate, endDate); // change this to use min and max date
+            TimeSpan total = new TimeSpan();
+            foreach (var booking in bookings)
+            {
+                TimeSpan t = TimeSpan.FromSeconds(booking.DifferenceInSeconds);
+                total += t;
+                string secondsToConvert = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms",
+                                        t.Hours,
+                                        t.Minutes,
+                                        t.Seconds,
+                                        t.Milliseconds);
+                todaysBookings.Append($"{booking.Category} - {secondsToConvert}");
+                todaysBookings.AppendLine();
+                
+            }
+            string totalTimeToConvert = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms",
+                                        total.Hours,
+                                        total.Minutes,
+                                        total.Seconds,
+                                        total.Milliseconds);
+            todaysBookings.AppendLine();
+            todaysBookings.Append($"TOTAL TIME = {totalTimeToConvert}");
+            todaysBookings.AppendLine();
+            todaysBookings.Append("Press {Yes} to get an Excel download of ALL your bookings held in the system.");
+            if (MessageBox.Show(
+                    todaysBookings.ToString(), "Bookings", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk
+                ) == DialogResult.Yes)
+            {
+               
+            }
         }
     }
 }
