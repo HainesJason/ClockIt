@@ -34,6 +34,23 @@ namespace ClockIt
             }
         }
 
+        public async Task<bool> PurgeBookings()
+        {
+            try
+            {
+                using (IDbConnection cnn = new SqliteConnection(_cnn))
+                {
+                    await cnn.ExecuteAsync("delete from booking");                 
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+           
+        }
+
         public async Task<int> StopRecording(StopClockModel booking)
         {
             var bookingRecord = await this.GetBookingById(booking.Id);

@@ -199,5 +199,26 @@ namespace ClockIt
                
             }
         }
+
+        private async void purgeAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var message = new StringBuilder("Purge all bookings held in the system?");
+            message.AppendLine();
+            message.AppendLine();
+            message.Append("If you  press {YES} this operation cannot be undone.");
+            if (MessageBox.Show(
+                    message.ToString(), "Bookings", MessageBoxButtons.YesNo, MessageBoxIcon.Warning
+                ) == DialogResult.Yes)
+            {
+                // Clean the databse down!
+                var dataManager = new DataManager();
+                var wasPurged = await dataManager.PurgeBookings();
+                if (wasPurged)
+                {
+                    MessageBox.Show("All bookings have been deleted", "bookings", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        
+        }
     }
 }
