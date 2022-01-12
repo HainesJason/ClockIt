@@ -22,14 +22,14 @@ namespace ClockIt
         {
             using (IDbConnection cnn = new SqliteConnection(_cnn))
             {
-                 await cnn.ExecuteScalarAsync("insert into Booking " +
-                                    "           (Category, Start)" +
-                                    "        values" +
-                                    "           (@Category, @Start)", booking);
+                await cnn.ExecuteScalarAsync("insert into Booking " +
+                                   "           (Category, Start)" +
+                                   "        values" +
+                                   "           (@Category, @Start)", booking);
 
                 var id = await cnn.QueryAsync<int>("SELECT Id FROM booking WHERE End is null");
                 return id.SingleOrDefault();
-                    //return await cnn.ExecuteScalarAsync("select last_insert_rowid()");
+                //return await cnn.ExecuteScalarAsync("select last_insert_rowid()");
 
             }
         }
@@ -40,7 +40,7 @@ namespace ClockIt
             {
                 using (IDbConnection cnn = new SqliteConnection(_cnn))
                 {
-                    await cnn.ExecuteAsync("delete from booking");                 
+                    await cnn.ExecuteAsync("delete from booking");
                 }
                 return true;
             }
@@ -48,7 +48,7 @@ namespace ClockIt
             {
                 return false;
             }
-           
+
         }
 
         public async Task<int> StopRecording(StopClockModel booking)
@@ -84,14 +84,14 @@ namespace ClockIt
         {
             using (IDbConnection cnn = new SqliteConnection(_cnn))
             {
-               
+
                 var sql = "select * from Booking where End is null";
                 var output = await cnn.QueryAsync<Booking>(sql);
                 return output.FirstOrDefault();
             }
         }
 
-        public async Task<List<Booking>> GetBookings(DateTime? start,  DateTime? end)
+        public async Task<List<Booking>> GetBookings(DateTime? start, DateTime? end)
         {
             if (!start.HasValue)
             {
@@ -110,5 +110,39 @@ namespace ClockIt
                 return output.ToList();
             }
         }
+
+        public async Task<List<BookingReportRecord>> GetBookingsForReport(DateTime? start, DateTime? end)
+        {
+            var bookings = await this.GetBookings(start, end);
+            var completedBookings = bookings.Where(x => x.End != null).ToList();
+            var reportData = (from c in completedBookings
+                              select new BookingReportRecord
+                              {
+                                  Day = Convert.ToDateTime(c.Start).Day,
+                                  Month = Convert.ToDateTime(c.Start).Month,
+                                  Year = Convert.ToDateTime(c.Start).Year,
+                                  Category = c.Category,
+                                  StartBooking = Convert.ToDateTime(c.Start),
+                                  EndBooking = Convert.ToDateTime(c.End),
+                                  LengthOfTimeInSeconds = c.DifferenceInSeconds,
+                                  UserFriendlyLengthOfTime = this.UserFriendlyTime(c.DifferenceInSeconds)
+                              }).ToList();
+            return reportData;
+        }
+
+        //TODO:  Move this into a static method as used in more than one place.
+        private string UserFriendlyTime(double differenceInSeconds)
+        {
+            TimeSpan t = TimeSpan.FromSeconds(differenceInSeconds);
+
+            string secondsToConvert = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms",
+                                    t.Hours,
+                                    t.Minutes,
+                                    t.Seconds,
+                                    t.Milliseconds);
+            return secondsToConvert;
+        }
+
+
     }
 }

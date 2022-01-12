@@ -9,7 +9,7 @@
   <Identity
     Name="be9e10b6-a3cd-434f-a460-b3264f861f06"
     Publisher="CN=JHaines"
-    Version="1.0.9.0" />
+    Version="1.0.10.0" />
 
   <Properties>
     <DisplayName>ClockIt</DisplayName>

@@ -1,4 +1,5 @@
 ﻿using ClockIt.Models;
+using ClockIt.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -104,7 +105,7 @@ namespace ClockIt
                     Start = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
                 };
                 this._hasOpenBookingId = await dataManager.StartRecording(startBooking);
-                MessageBox.Show($"Started booking with Id = {this._hasOpenBookingId} ");
+                MessageBox.Show($"Started booking with Id = {this._hasOpenBookingId} ", "Booking", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -123,7 +124,7 @@ namespace ClockIt
                     End = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
                 };
                 this._hasOpenBookingId = await dataManager.StopRecording(stopBooking);
-                MessageBox.Show($"Booking {stopBooking.Id} has been closed");
+                MessageBox.Show($"Booking {stopBooking.Id} has been closed", "Bookings", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
         }
@@ -196,7 +197,15 @@ namespace ClockIt
                     todaysBookings.ToString(), "Bookings", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk
                 ) == DialogResult.Yes)
             {
-               
+                // get data 
+                var reportData = await dataManager.GetBookingsForReport(null, null);
+                var excelService = new ExcelReporterService();
+                var reportFile = excelService.GenerateReport(reportData);
+                if (!string.IsNullOrEmpty(reportFile))
+                {
+                    MessageBox.Show($"Reporter file generated = {reportFile}", "Report produced", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
             }
         }
 
