@@ -18,7 +18,7 @@ namespace ClockIt
 {
     public partial class ClockIT : Form
     {
-
+        private Icon _currentIcon;
 
 
         public bool HasOpenBooking
@@ -50,6 +50,7 @@ namespace ClockIt
         private async void Form1_Load(object sender, EventArgs e)
         {
             this.CopyDatabase();
+            _currentIcon = notifyIcon1.Icon;
 
             if (this.WindowState == FormWindowState.Minimized)
             {
@@ -60,6 +61,8 @@ namespace ClockIt
             if (booking != null)
             {
                 this._hasOpenBookingId = booking.Id;
+                notifyIcon1.Icon = Properties.Resources.HasBooking;
+                _currentIcon = notifyIcon1.Icon;
             }
             notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
             notifyIcon1.BalloonTipTitle = "ClockIt";
@@ -106,6 +109,8 @@ namespace ClockIt
                 };
                 this._hasOpenBookingId = await dataManager.StartRecording(startBooking);
                 MessageBox.Show($"Started booking with Id = {this._hasOpenBookingId} ", "Booking", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                notifyIcon1.Icon = Properties.Resources.HasBooking;
+                _currentIcon = notifyIcon1.Icon;
             }
         }
 
@@ -125,7 +130,8 @@ namespace ClockIt
                 };
                 this._hasOpenBookingId = await dataManager.StopRecording(stopBooking);
                 MessageBox.Show($"Booking {stopBooking.Id} has been closed", "Bookings", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                notifyIcon1.Icon = Properties.Resources.Alarm_Clock;
+                _currentIcon = notifyIcon1.Icon;
             }
         }
 
